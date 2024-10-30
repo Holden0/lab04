@@ -9,6 +9,7 @@ function ToDoList() {
         { name: "Task 3", completed: false }
     ]);
     const [newTask, setNewTask] = useState('');
+    const [filter, setFilter] = useState('all');
 
     function handleInputChange(event) {
         setNewTask(event.target.value);
@@ -27,13 +28,19 @@ function ToDoList() {
     }
 
     function toggleTask(index) {
-        const updatedTasks = tasks.map((task, i) => 
+        const updatedTasks = tasks.map((task, i) =>
             i === index ? { ...task, completed: !task.completed } : task
         );
         setTasks(updatedTasks);
     }
 
     const remainingTasksCount = tasks.filter(task => !task.completed).length;
+
+    const filteredTasks = tasks.filter(task => {
+        if (filter === 'completed') return task.completed;
+        if (filter === 'pending') return !task.completed;
+        return true; 
+    });
 
     return (
         <div className="container">
@@ -45,8 +52,15 @@ function ToDoList() {
                     handleInputChange={handleInputChange} 
                     addTask={addTask} 
                 />
+
+                <div className="filter-buttons">
+                    <button onClick={() => setFilter('all')}>All</button>
+                    <button onClick={() => setFilter('pending')}>Pending</button>
+                    <button onClick={() => setFilter('completed')}>Completed</button>
+                </div>
+
                 <ol>
-                    {tasks.map((task, index) => (
+                    {filteredTasks.map((task, index) => (
                         <Task 
                             key={index} 
                             task={task} 
